@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
-import com.example.mvi.common.extensions.collectIn
 
 abstract class BaseFragment<Binding : ViewBinding, Event, State, Effect> : Fragment() {
 
@@ -27,9 +26,15 @@ abstract class BaseFragment<Binding : ViewBinding, Event, State, Effect> : Fragm
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        observeState()
-        observeEffect()
-        setupListeners()
+        bindScreen()
+    }
+
+    protected inline fun viewModelScope(action: BaseViewModel<Event, State, Effect>.() -> Unit) {
+        action(viewModel)
+    }
+
+    protected inline fun viewBindingScope(action: Binding.() -> Unit) {
+        action(binding)
     }
 
     override fun onDestroyView() {
@@ -37,20 +42,7 @@ abstract class BaseFragment<Binding : ViewBinding, Event, State, Effect> : Fragm
         _binding = null
     }
 
-    private fun observeState() {
-        viewModel.state.collectIn(viewLifecycleOwner) {
-            renderState(it)
-        }
-    }
 
 
-    private fun observeEffect() {
-        viewModel.effect.collectIn(viewLifecycleOwner) {
-            handleEffect(it)
-        }
-    }
-
-    abstract fun setupListeners()
-    abstract fun renderState(state: State)
-    abstract fun handleEffect(effect: Effect)
+    abstract fun bindScreen()
 }

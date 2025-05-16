@@ -1,13 +1,11 @@
 package com.example.mvi.ui.fragment.second
 
-import androidx.lifecycle.viewModelScope
 import com.example.mvi.common.base.BaseViewModel
 import com.example.mvi.common.base.Effect
 import com.example.mvi.common.base.Event
 import com.example.mvi.common.base.State
 import com.example.mvi.domain.usecase.UseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -18,10 +16,7 @@ class SecondViewModel @Inject constructor(private val useCase: UseCase) :
     override fun handleEvents(event: SecondEvent) {
         when (event) {
             is SecondEvent.FetchData -> {
-                viewModelScope.launch {
-                    // val result = useCase.fetchData(event.query)
-                    // state güncellenebilir
-                }
+                setEffect { SecondEffect.ShowToast("") }
             }
         }
     }

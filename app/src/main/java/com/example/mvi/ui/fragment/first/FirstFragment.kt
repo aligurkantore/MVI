@@ -2,9 +2,9 @@ package com.example.mvi.ui.fragment.first
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.viewModels
 import com.example.mvi.common.base.BaseFragment
+import com.example.mvi.common.extensions.collectIn
 import com.example.mvi.databinding.FragmentFirstBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -20,18 +20,21 @@ class FirstFragment : BaseFragment<FragmentFirstBinding, FirstEvent, FirstState,
         return FragmentFirstBinding.inflate(layoutInflater)
     }
 
-    override fun setupListeners() {
-        //todo
+    override fun bindScreen() {
+        collectState()
+        collectEffect()
     }
 
-    override fun renderState(state: FirstState) {
-        viewModel.setEvent(FirstEvent.FetchData(""))
+    private fun collectState() = with(binding) {
+        viewModel.state.collectIn(viewLifecycleOwner) { state->
+         //   state.
+        }
     }
 
-    override fun handleEffect(effect: FirstEffect) {
-        when (effect) {
-            is FirstEffect.ShowToast -> {
-                Toast.makeText(requireContext(), effect.message, Toast.LENGTH_SHORT).show()
+    private fun collectEffect() {
+        viewModel.effect.collectIn(viewLifecycleOwner) { effect ->
+            when(effect) {
+                is FirstEffect.ShowToast -> {}
             }
         }
     }
